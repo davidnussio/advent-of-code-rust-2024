@@ -6,6 +6,7 @@ use itertools::Itertools;
 use regex::Regex;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
+use std::usize;
 
 const DAY: &str = "03"; // TODO: Fill the day
 const INPUT_FILE: &str = concatcp!("input/", DAY, ".txt");
@@ -26,16 +27,13 @@ fn main() -> Result<()> {
     fn part1<R: BufRead>(reader: R) -> Result<usize> {
         // TODO: Solve Part 1 of the puzzle
         let re = Regex::new(r"mul\((\d+),(\d+)\)").unwrap();
-        let mut results = vec![];
-        for line in reader.lines().flatten() {
-            for cap in re.captures_iter(&line) {
-                results.push((cap[1].parse::<usize>()?, cap[2].parse::<usize>()?));
-            }
-        }
 
-        let m: Vec<usize> = results.iter().map(|(a, b)| a * b).collect();
+        let res = reader.lines().flatten().fold(0, |acc, line| {
+            re.captures_iter(&line).fold(acc, |acc, cap| {
+                acc + cap[1].parse::<usize>().unwrap_or(0) * cap[2].parse::<usize>().unwrap_or(0)
+            })
+        });
 
-        let res = m.iter().sum::<usize>();
         Ok(res)
     }
 
@@ -58,7 +56,7 @@ fn main() -> Result<()> {
         let line = reader.lines().flatten().join("");
         let line = re_line.replace_all(&line, "");
         let res = re.captures_iter(&line).fold(0, |acc, cap| {
-            acc + cap[1].parse::<usize>().unwrap() * cap[2].parse::<usize>().unwrap()
+            acc + cap[1].parse::<usize>().unwrap_or(0) * cap[2].parse::<usize>().unwrap_or(0)
         });
 
         Ok(res)
