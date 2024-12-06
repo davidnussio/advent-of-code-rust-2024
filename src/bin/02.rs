@@ -1,5 +1,5 @@
 use adv_code_2024::*;
-use anyhow::*;
+use anyhow::Result;
 use code_timing_macros::time_snippet;
 use const_format::concatcp;
 use std::fs::File;

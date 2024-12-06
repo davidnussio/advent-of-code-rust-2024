@@ -1,5 +1,5 @@
 use adv_code_2024::*;
-use anyhow::*;
+use anyhow::Result;
 use code_timing_macros::time_snippet;
 use const_format::concatcp;
 use std::fs::File;
@@ -9,7 +9,6 @@ const DAY: &str = "NN"; // TODO: Fill the day
 const INPUT_FILE: &str = concatcp!("input/", DAY, ".txt");
 
 const TEST: &str = "\
-<TEST-INPUT>
 "; // TODO: Add the test input
 
 fn main() -> Result<()> {
@@ -30,22 +29,22 @@ fn main() -> Result<()> {
     let input_file = BufReader::new(File::open(INPUT_FILE)?);
     let result = time_snippet!(part1(input_file)?);
     println!("Result = {}", result);
-    // assert_eq!(0, result);
+    assert_eq!(0, result);
     //endregion
 
     //region Part 2
-    // println!("\n=== Part 2 ===");
-    //
-    // fn part2<R: BufRead>(reader: R) -> Result<usize> {
-    //     Ok(0)
-    // }
-    //
-    // assert_eq!(0, part2(BufReader::new(TEST.as_bytes()))?);
-    //
-    // let input_file = BufReader::new(File::open(INPUT_FILE)?);
-    // let result = time_snippet!(part2(input_file)?);
-    // println!("Result = {}", result);
-    // assert_eq!(0, result);
+    println!("\n=== Part 2 ===");
+
+    fn part2<R: BufRead>(_reader: R) -> Result<usize> {
+        Ok(0)
+    }
+
+    assert_eq!(0, part2(BufReader::new(TEST.as_bytes()))?);
+
+    let input_file = BufReader::new(File::open(INPUT_FILE)?);
+    let result = time_snippet!(part2(input_file)?);
+    println!("Result = {}", result);
+    assert_eq!(0, result);
     //endregion
 
     Ok(())
