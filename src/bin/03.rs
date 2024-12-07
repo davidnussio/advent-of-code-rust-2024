@@ -47,8 +47,8 @@ fn main() -> Result<()> {
     //endregion
 
     //region Part 2
-    // println!("\n=== Part 2 ===");
-    //
+    println!("\n=== Part 2 ===");
+
     fn part2<R: BufRead>(reader: R) -> Result<usize> {
         let re_line = Regex::new(r"don\'t\(\)(.*?)do\(\)").unwrap();
         let re = Regex::new(r"mul\((\d+),(\d+)\)").unwrap();

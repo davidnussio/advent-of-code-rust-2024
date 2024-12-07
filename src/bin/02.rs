@@ -1,5 +1,5 @@
 use adv_code_2024::*;
-use anyhow::Result;
+use anyhow::*;
 use code_timing_macros::time_snippet;
 use const_format::concatcp;
 use std::fs::File;
@@ -15,10 +15,6 @@ const TEST: &str = "\
 1 3 2 4 5
 8 6 4 4 1
 1 3 6 7 9
-1 1 2 3 4
-1 2 3 4 4
-1 1 2 3 3
-1 2 2 3 3
 "; // TODO: Add the test input
 
 fn main() -> Result<()> {
@@ -51,21 +47,19 @@ fn main() -> Result<()> {
     fn part2<R: BufRead>(reader: R) -> Result<i64> {
         let answer = reader.lines().flatten().fold(0, |acc, line| {
             let numbers = get_nums(line);
-
             let result = if is_safe(&numbers) {
                 1
-            } else if numbers.iter().enumerate().any(|(i, _)| {
-                is_safe(
-                    &numbers
-                        .iter()
-                        .enumerate()
-                        .filter_map(|(j, &num)| if i != j { Some(num) } else { None })
-                        .collect::<Vec<_>>(),
-                )
-            }) {
-                1
             } else {
-                0
+                let can_be_safe = (0..numbers.len()).any(|i| {
+                    let mut subset = numbers.clone();
+                    subset.remove(i);
+                    is_safe(&subset)
+                });
+                if can_be_safe {
+                    1
+                } else {
+                    0
+                }
             };
 
             acc + result
@@ -73,11 +67,12 @@ fn main() -> Result<()> {
         Ok(answer)
     }
 
-    assert_eq!(9, part2(BufReader::new(TEST.as_bytes()))?);
+    assert_eq!(4, part2(BufReader::new(TEST.as_bytes()))?);
 
     let input_file = BufReader::new(File::open(INPUT_FILE)?);
     let result = time_snippet!(part2(input_file)?);
     println!("Result = {}", result);
+    assert_eq!(413, result);
     //endregion
 
     Ok(())

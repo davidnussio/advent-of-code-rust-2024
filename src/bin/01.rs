@@ -2,7 +2,6 @@ use adv_code_2024::*;
 use anyhow::Result;
 use code_timing_macros::time_snippet;
 use const_format::concatcp;
-use itertools::Itertools;
 use std::collections::HashMap;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
@@ -19,30 +18,16 @@ const TEST: &str = "\
 3   3
 "; // TODO: Add the test input
 
-fn split_cols(line: &String) -> Option<(&str, &str)> {
-    line.split_whitespace().collect_tuple()
-}
-
-fn parse_numbers((left_num, right_num): (&str, &str)) -> Option<(usize, usize)> {
-    if let (Ok(left_num), Ok(right_num)) = (left_num.parse::<usize>(), right_num.parse::<usize>()) {
-        Some((left_num, right_num))
-    } else {
-        None
-    }
-}
-
 fn parse_data<R: BufRead>(reader: R) -> (Vec<usize>, Vec<usize>) {
     let (mut left_lines, mut right_lines): (Vec<usize>, Vec<usize>) = reader
         .lines()
         .flatten()
         .fold((Vec::new(), Vec::new()), |(mut left, mut right), line| {
-            split_cols(&line)
-                .and_then(parse_numbers)
-                .and_then(|(left_num, right_num)| {
-                    left.push(left_num);
-                    right.push(right_num);
-                    Some((left, right))
-                });
+            let mut parts = line.split_whitespace();
+            if let (Some(left_num), Some(right_num)) = (parts.next(), parts.next()) {
+                left.push(left_num.parse().unwrap());
+                right.push(right_num.parse().unwrap());
+            }
             (left, right)
         });
 
